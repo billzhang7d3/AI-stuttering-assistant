@@ -77,7 +77,7 @@ fun ButtonExample(onClick: () -> Unit) {
             } else {
                 speechRecog.stopListening()
                 GlobalScope.launch(Dispatchers.IO) {
-                    val response: String = virtualAssistant.process("what is kotlin", "gpt-3.5-turbo")
+                    val response: String = virtualAssistant.process("what is kotlin, short answers only", "gpt-3.5-turbo")
                     Log.d("response", response)
                     val audio = virtualAssistant.generateSpeech(response, "tts-1")
                     Log.d("audio bytearray", audio.toString())
