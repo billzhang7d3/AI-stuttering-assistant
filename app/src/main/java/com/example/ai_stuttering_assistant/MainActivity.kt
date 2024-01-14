@@ -8,16 +8,22 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -65,8 +71,22 @@ class MainActivity : ComponentActivity() {
         Log.d("APIKey", apiKey)
         virtualAssistant = VirtualAssistant(apiKey)
         mediaPlayer = MediaPlayer()
+
+        enableEdgeToEdge()
+
+        if( android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P ) {
+            window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
+
         setContent {
-            Interface(this)
+            AIStutteringAssistantTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Interface( this )
+                }
+            }
         }
     }
 }
@@ -120,24 +140,26 @@ fun ButtonExample(context: Context, onClick: () -> Unit) {
 
 @Composable
 fun Interface(context: Context) {
-    Column(
-        modifier = Modifier
-            .padding(all = 8.dp)
-            .fillMaxWidth(),
+    LazyColumn(
+        contentPadding = WindowInsets.systemBars.asPaddingValues(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.misato),
-            contentDescription = "Misato Katsuragi",
-            modifier = Modifier
-                .size(500.dp)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Misato Katsuragi", fontSize = 24.sp)
-        Spacer(modifier = Modifier.height(100.dp))
-        ButtonExample(
-            context = context,
-            onClick = { Log.d("talk-button", "BUTTON CLICKED") }
-        )
+        item {
+            Image(
+                painter = painterResource(id = R.drawable.misato),
+                contentDescription = "Misato Katsuragi",
+                modifier = Modifier
+                    .size(500.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Misato Katsuragi", fontSize = 24.sp)
+            Spacer(modifier = Modifier.height(100.dp))
+            ButtonExample(
+                context = context,
+                onClick = { Log.d("talk-button", "BUTTON CLICKED") }
+            )
+        }
     }
 }
+
